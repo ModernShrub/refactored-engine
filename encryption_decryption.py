@@ -7,6 +7,7 @@ root = Tk()
 root.geometry("400x250")
 file_name_entry = ''
 encryption_text_data = ''
+decrypton_text_data = ''
 
 def savedata():
     global file_name_entry
@@ -20,11 +21,24 @@ def savedata():
     print(ciphercode)
     hex_str = ciphercode.hex()
     print(hex_str)
-    file.write(hex_str)
+    file1 = open(filename+"_encrypted"+".txt", 'w')
+    file1.write(hex_str)
     encryption_text_data.delete("1.0", END)
     file_name_entry.delete(0, END)
     
-
+def viewdata():
+    global file_name_entry
+    global decryption_text_data
+    file = filedialog.askopenfilename(title="Open file", filetypes=(("Text", "*.txt"),))
+    filename = os.path.basename(file)
+    txtfile = open(filename, 'r+')
+    para = txtfile.read()
+    print(para)
+    bpara = bytes.fromhex(para)
+    dpara = decrypt('AIO', bpara)
+    finalpara = dpara.decode()
+    decryption_text_data.insert(END, finalpara)
+    
 def startDecryption():
     global file_name_entry
     global decryption_text_data
@@ -35,7 +49,7 @@ def startDecryption():
     decryption_text_data = Text(decryption_window, height=20, width=72)
     decryption_text_data.place(relx=0.5,rely=0.35, anchor=CENTER)
     
-    btn_open_file = Button(decryption_window, text="Choose File..", font = 'arial 13')
+    btn_open_file = Button(decryption_window, text="Choose File..", font = 'arial 13', command=viewdata)
     btn_open_file.place(relx=0.5,rely=0.8, anchor=CENTER)
     
     decryption_window.mainloop()
